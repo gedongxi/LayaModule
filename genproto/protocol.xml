@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="style.xsl"?>
+<!-- c2s 客户端到服务器请求 -->
+<!-- s2c 服务器客到户端推送 -->
+<protocol>
+    <error desc="错误码描述">
+        <code id="0" name="E_OK" desc="成功" />
+        <code id="1" name="E_UNKNOWN" desc="未知错误" />
+        <code id="5" name="E_FAILED" desc="失败" />
+        <!-- 系统错误 -->
+        <code id="1000" name="E_SYSTEM" desc="系统错误" />
+        <code id="1001" name="E_DB" desc="数据库错误" />
+        <code id="1003" name="E_NEXIST" desc="对象不存在" />
+        <code id="1004" name="E_BADARG" desc="参数错误" />
+        <code id="1008" name="E_CALL_TIMEOUT" desc="请求超时" />
+        <!-- 玩家问题 -->
+        <code id="1100" name="E_AUTH" desc="认证失败" />
+        <code id="1101" name="E_MAINTAIN" desc="维护状态" />
+        <code id="1102" name="E_RE_LOGIN" desc="需要重新登陆" />
+        <code id="1105" name="E_UGC_INVALID" desc="内容包含非法信息或长度不合适" />
+        <code id="1106" name="E_NAME_EXIST" desc="名称已存在" />
+        <code id="1108" name="E_PLAYER_NEXIST" desc="玩家不存在" />
+        <code id="1201" name="E_GOLD_LACK" desc="金币不足" />
+        <code id="1211" name="E_GEM_LACK" desc="宝石不足" />
+        <code id="1503" name="E_TARGET_NEXIST" desc="对应目标不存在" />
+        <code id="1601" name="E_PLAYER_OFFLINE" desc="玩家不存在或者离线" />
+
+        <code id="2001" name="E_ROOM_NEXIST" desc="房间不存在" />
+        <code id="2002" name="E_NOT_OWNER" desc="不是房主" />
+
+        <code id="2201" name="E_CARD_GROUP_NEXIST" desc="卡组不存在"/>
+        <code id="2202" name="E_CARD_NEXIST" desc="卡牌未拥有" />
+
+        <code id="2300" name="E_ITEM_LACK" desc="缺乏物品" />
+
+        <code id="2301" name="E_WEAPON_NOT_OWN" desc="未拥有武器"/>
+        <code id="2302" name="E_WEAPON_LACK_MATERIAL" desc="缺乏材料" />
+    </error>
+
+    <types desc="全局自定义类型列表">
+        <type name="p_player" desc="玩家信息">
+            <f t="uint64"  name="id"       desc="玩家id"/>
+            <f t="string"  name="name"     desc="名称"/>
+            <f t="uint8"   name="sex"      desc="性别"/>
+            <f t="uint32"  name="lvl"      desc="玩家等级"/>
+            <f t="uint32"  name="weapon"   desc="武器"/>
+        </type>
+        <type name="p_syn_init" desc="同步初始化">
+            <f t="uint64" name="player_id"  desc="玩家id" />
+            <f t="string" name="player_name"  desc="玩家姓名" />
+            <f t="uint32" name="xpos"        desc="坐标" />
+            <f t="uint32" name="ypos"        desc="坐标" />
+            <f t="uint8"  name="rotation"   desc="角度" />
+            <f t="uint32" name="weapon" desc="武器" />
+            <f t="uint8"  name="camp" desc="阵营" />
+            <loop t="uint32" name="skill"   desc="技能" />
+        </type>
+        <type name="p_syn_frame" desc="同步帧" >
+            <f t="uint8" name="xspeed"    desc="速度" />
+            <f t="uint8" name="yspeed"    desc="速度" />
+            <f t="uint8" name="rotation" desc="角度" />
+            <f t="uint8" name="skill_rotation" desc="技能角度" />
+            <f t="uint8" name="operator"    desc="操作" />
+            <f t="uint8" name="eject_ratio"    desc="抛射比例" />
+        </type>
+        <type name="p_syn_frame_list" desc="同步帧列表" >
+            <f t="uint16" name="index" desc="帧序列" />
+            <loop t="p_syn_frame" name="frame"    desc="帧" />
+        </type>
+        <type name="skill_frame" desc="同步技能列表" >
+            <f t="uint16" name="index" desc="帧序列" />
+            <f t="uint64" name="player_id" desc="玩家id" />
+            <f t="uint32" name="id" desc="选择的技能id" />
+        </type>
+        <type name="p_card_group" desc="卡组" >
+            <f t="uint8" name="group_id" desc="卡组id" />
+            <f t="string" name="group_name" desc="卡组名字" />
+            <loop t="uint32" name="card_list" desc="卡片id列表" />
+        </type>
+        <type name="p_card" desc="卡组中的卡牌" >
+            <f t="uint8" name="site" desc="卡牌在卡组中的位置" />
+            <f t="uint32" name="card_id" desc="卡牌id" />
+        </type>
+        <type name="p_weapon" desc="武器" >
+            <f t="uint16" name="weapon_id" desc="武器id" />
+            <f t="uint8" name="weapon_lvl" desc="武器等级" />
+        </type>
+        <type name="p_car" desc="车身" >
+            <f t="uint16" name="car_id" desc="车身id" />
+            <f t="uint8" name="car_lvl" desc="车身等级" />
+        </type>
+        <type name="p_slot" desc="槽位" >
+            <f t="uint16" name="slot_id" desc="槽位id" />
+            <f t="uint16" name="weapon_id" desc="武器id" />
+            <f t="uint16" name="car_id" desc="车身id" />
+            <f t="uint8" name="status" desc="是否正在使用 0否1是" />
+        </type>
+        <type name="p_item" desc="物品" >
+            <f t="uint16" name="id" desc="物品id" />
+            <f t="uint16" name="number" desc="物品数量" />
+        </type>
+    </types>
+    <section id="9" name="debug" desc="debug信息">
+        <msg id="0" name="error" desc="协议错误码" >
+            <s2c>
+                <f t="uint16" name="msgid" desc="协议Id" />
+                <f t="uint32" name="code" desc="错误码" />
+            </s2c>
+        </msg>
+    </section>
+    <section id="10" name="acc" desc="账户信息">
+        <msg id="0" name="login" desc="用户登录" >
+            <c2s>
+                <f t="string" name="platform" desc="平台名字"/>
+                <f t="string" name="game_account_id" desc="游戏的账号Id" />
+                <f t="string" name="game_account_sign" desc="游戏的账号Id的签名" />
+                <f t="string" name="channel_open_id" desc= "渠道的用户id"/>
+                <f t="string" name="channel_param" desc="渠道其他参数"/>
+                <f t="uint8"  name="mode" desc="mode"/>
+            </c2s>
+            <s2c>
+                <f t="uint16" name="code" desc="错误码(0成功，其他:失败错误码)" />
+                <f t="uint64" name="id"   desc="角色id" />
+                <f t="string" name="channel_open_id"   desc= "运营平台的用户id"/>
+                <f t="string" name="game_account_id"   desc="游戏的账号Id" />
+                <f t="string" name="game_account_sign" desc="游戏的账号Id的签名" />
+                <f t="string" name="game_login_key"    desc="登陆key 用于重登陆时发送" />
+            </s2c>
+        </msg>
+        <msg id="2" name="create" desc="创建角色" >
+            <c2s>
+            </c2s>
+            <s2c>
+                <f t ="uint16" name="code" desc="错误码" />
+                <f t ="uint64" name="id" desc="角色id"/>
+            </s2c>
+        </msg>
+        <msg id="3" name="create_with_params" desc="创建角色" >
+            <c2s>
+                <f t="uint8"   name="head"   desc="头像Id" />
+                <f t="uint8"   name="sex"    desc="性别" />
+                <f t="string"  name="name"   desc="角色名字" />
+                <f t="string"  name="params" desc="Json字符串" />
+            </c2s>
+        </msg>
+        <msg id="4" name="enter" desc="角色进入游戏" >
+            <c2s>
+                <f t ="uint64" name="id" desc="角色id"/>
+            </c2s>
+            <s2c>
+                <f t="uint16"  name="code" desc="错误码" />
+            </s2c>
+        </msg>
+        <msg id="5" name="kick_offline" desc="玩家被踢下线" >
+            <s2c>
+                <f t="string"  name="content" desc="提示信息" />
+            </s2c>
+        </msg>
+        <msg id="6" name="relogin" desc="断线重新登陆">
+            <c2s>
+                <f t="string" name="platform"            desc="平台名字"/>
+                <f t="string" name="game_account_id"     desc="游戏角色账号Id"/>
+                <f t="string" name="game_account_sign"   desc="游戏角色账号签名"/>
+                <f t="uint64" name="id"                  desc="玩家Id"/>
+                <f t="string" name="channel_param"       desc="参数"/>
+            </c2s>
+            <s2c>
+                <f t="uint16" name="code" desc="错误码(0成功,1失败)"/>
+            </s2c>
+        </msg>
+        <msg id="7" name="servertime" desc="获取服务器时间">
+            <c2s/>
+            <s2c>
+                <f t="uint32" name="time" desc="服务器时间"/>
+            </s2c>
+        </msg>
+        <msg id="10" name="ban" desc="账号被禁" >
+            <s2c>
+                <f t="uint8"  name="reason" desc="原因 1:账号 2:IP" />
+                <f t="uint32" name="end_time" desc="结束时间戳" />
+            </s2c>
+        </msg>
+        <msg id="11" name="maintain" desc="服务器维护" >
+            <s2c>
+                <f t="uint16" name="state" desc="状态码1 维护中" />
+                <f t="string" name="desc" desc="描述" />
+            </s2c>
+        </msg>
+    </section>
+    <section id="11" name="player" desc="玩家信息">
+        <msg id="0" name="self_info" desc="通知个人主角信息">
+            <s2c>
+                <f t="p_player" name="player" desc="玩家信息"/>
+            </s2c>
+        </msg>
+        <msg id="1" name="fortune" desc="玩家财富更新">
+            <s2c>
+                <f t="uint8" name="type" desc="财富类型1:宝石 2:金币 3:体力 4: 经验" />
+                <f t="uint32" name="val" desc="财富数值" />
+            </s2c>
+        </msg>
+        <msg id="2" name="daily_cleared" desc="一天已过,数据已清" >
+            <s2c/>
+        </msg>
+        <msg id="3" name="announcement" desc="公告" >
+            <c2s/>
+            <s2c>
+                <f t="string" name="content" desc="公告内容" />
+                <f t="string" name="qq" desc="qq号" />
+            </s2c>
+        </msg>
+    </section>
+    <section id="20" name="room" desc="自定义房间" >
+        <msg id="0" name="create" desc="创建房间" >
+            <c2s/>
+        </msg>
+        <msg id="1" name="join" desc="加入房间" >
+            <c2s>
+                <f t="uint32" name="room_id" desc="房间id" />
+            </c2s>
+        </msg>
+        <msg id="2" name="enter_notify" desc="进入房间通知" >
+            <s2c>
+                <f t="uint32" name="room_id" desc="房间id" />
+            </s2c>
+        </msg>
+        <msg id="3" name="update_count" desc="更新房间内玩家数量" >
+            <s2c>
+                <f t="uint8" name="count" desc="玩家数量" />
+            </s2c>
+        </msg>
+<!--        <msg id="3" name="update" desc="更新房间内玩家信息" >-->
+<!--            <c2s/>-->
+<!--            <s2c>-->
+<!--                <loop t="p_roommate_update" name="list" desc="房间内玩家基本信息更新列表" />-->
+<!--            </s2c>-->
+<!--        </msg>-->
+        <msg id="4" name="start" desc="开始游戏" >
+            <c2s/>
+        </msg>
+        <msg id="5" name="make_robot" desc="生成机器人" >
+            <c2s/>
+            <s2c>
+                <f t="uint16" name="count" desc="机器人数量" />
+            </s2c>
+        </msg>
+    </section>
+    <section id="21" name="map" desc="房间内玩法" >
+        <msg id="0" name="start_notify" desc="开始游戏通知" >
+            <s2c>
+                <f t="uint32" name="map_id" desc="游戏id" />
+                <f t="uint32" name="seed" desc="随机数种子" />
+                <loop t="p_syn_init" name="list" desc="玩家初始化信息列表" />
+            </s2c>
+        </msg>
+        <msg id="1" name="syn" desc="同步内容" >
+            <c2s>
+                <f t="uint8" name="xspeed"    desc="速度" />
+                <f t="uint8" name="yspeed"    desc="速度" />
+                <f t="uint8" name="rotation" desc="角度" />
+                <f t="uint8" name="skill_rotation" desc="角度" />
+                <f t="uint8" name="operator"    desc="操作" />
+                <f t="uint8" name="eject_ratio"    desc="抛射比例" />
+            </c2s>
+            <s2c>
+                <f t="p_syn_frame_list" name="frame" desc="同步帧" />
+            </s2c>
+        </msg>
+<!--        <msg id="200" name="go_proto" desc="golang 同步协议" >-->
+<!--            <c2s>-->
+<!--                <f t="uint16" name="ai_id" desc="机器人id" />-->
+<!--                <f t="uint8" name="section_id" desc="协议section_id" />-->
+<!--                <f t="uint8" name="msg_id" desc="协议msg_id" />-->
+<!--                <f t="string" name="protoContent" desc="协议内容" />-->
+<!--            </c2s>-->
+<!--        </msg>-->
+        <msg id="101" name="go_syn" desc="golang 同步" >
+            <c2s>
+                <f t="uint16" name="ai_id" desc="机器人id" />
+                <f t="uint8" name="x_speed"    desc="速度" />
+                <f t="uint8" name="y_speed"    desc="速度" />
+                <f t="uint8" name="rotation" desc="角度" />
+                <f t="uint8" name="skill_rotation" desc="角度" />
+                <f t="uint8" name="operator"    desc="技能" />
+                <f t="uint8" name="eject_ratio"    desc="抛射比例" />
+            </c2s>
+        </msg>
+        <msg id="102" name="close_arena" desc="竞技场关闭" >
+            <s2c/>
+        </msg>
+        <msg id="2" name="debug" desc="调试" >
+            <c2s>
+                <f t="string" name="msg" desc="调试信息" />
+            </c2s>
+        </msg>
+        <msg id="203" name="go_choose_skill" desc="选择技能id" >
+            <c2s>
+                <f t="uint64" name="ai_id" desc="机器人id" />
+                <f t="uint32" name="skill_id" desc="选择的技能id" />
+            </c2s>
+        </msg>
+        <msg id="3" name="choose_skill" desc="同步选择" >
+            <c2s>
+                <f t="uint32" name="id" desc="选择的技能id" />
+            </c2s>
+            <s2c>
+                <f t="uint16" name="index" desc="帧序列" />
+                <f t="uint64" name="player_id" desc="玩家id" />
+                <f t="uint32" name="id" desc="选择的技能id" />
+            </s2c>
+        </msg>
+        <msg id="204" name="go_upgrade" desc="升级" >
+            <c2s>
+                <f t="uint64" name="player_id" desc="玩家id" />
+                <f t="uint8" name="lvl" desc="升到几级" />
+            </c2s>
+            <s2c>
+                <f t="uint64" name="player_id" desc="玩家id" />
+                <loop t="uint32" name="jackpot" desc="可选技能" />
+            </s2c>
+        </msg>
+        <msg id="4" name="upgrade" desc="升级" >
+            <c2s>
+                <f t="uint8" name="lvl" desc="升到几级" />
+            </c2s>
+            <s2c>
+                <loop t="uint32" name="jackpot" desc="可选技能" />
+            </s2c>
+        </msg>
+        <msg id="5" name="downgrade" desc="降级" >
+            <c2s>
+                <f t="uint8" name="lvl" desc="降到几级" />
+            </c2s>
+        </msg>
+        <msg id="6" name="leave" desc="离开房间" >
+            <c2s/>
+        </msg>
+        <msg id="7" name="relogin_frame" desc="重连获取帧" >
+            <c2s>
+                <f t="uint16" name="index" desc="从第几帧开始" />
+            </c2s>
+
+            <s2c>
+                <loop t="p_syn_frame_list" name="list" desc="同步帧列表" />
+            </s2c>
+        </msg>
+
+        <msg id="8" name="relogin_done" desc="重连包完成" >
+            <s2c/>
+        </msg>
+        <msg id="9" name="player_in_map" desc="玩家在游戏中" >
+            <s2c/>
+        </msg>
+        <msg id="10" name="load_done" desc="玩家载入完成" >
+            <c2s/>
+        </msg>
+        <msg id="11" name="enter" desc="玩家插入游戏" >
+            <s2c>
+                <f t="uint16" name="index" desc="帧序列"/>
+                <f t="p_syn_init" name="info" desc="玩家初始化信息" />
+            </s2c>
+        </msg>
+        <msg id="12" name="refresh_skill" desc="刷新技能" >
+            <c2s/>
+            <s2c>
+                <loop t="uint32" name="jackpot" desc="可选技能" />
+            </s2c>
+        </msg>
+
+
+        <msg id="13" name="get_all_frames" desc="获取所有地图数据" >
+            <c2s/>
+        </msg>
+        <msg id="14" name="start_battle" desc="正式开始" >
+            <s2c></s2c>
+        </msg>
+        <msg id="100" name="gm_add_skill" desc="增加技能" >
+            <c2s>
+                <f t="uint32" name="id" desc="新加技能id" />
+            </c2s>
+            <s2c>
+                <f t="uint16" name="index" desc="帧序列" />
+                <f t="uint64" name="player_id" desc="玩家id" />
+                <f t="uint32" name="skill_id" desc="技能id" />
+            </s2c>
+        </msg>
+
+        <msg id="111" name="result" desc="玩家结果" >
+            <c2s>
+                <f t="uint8" name="result" desc="游戏结果"/>
+            </c2s>
+        </msg>
+    </section>
+    <section id="22" name="card" desc="卡牌" >
+        <msg id="1" name="owned" desc="已拥有卡牌列表" >
+            <c2s/>
+            <s2c>
+                <loop t="uint32" name="list" desc="已拥有卡牌列表" />
+            </s2c>
+        </msg>
+        <msg id="2" name="group" desc="卡组信息" >
+            <c2s/>
+            <s2c>
+                <f t="uint8" name="on" desc="当前使用卡组" />
+                <loop t="p_card_group" name="list" desc="卡组列表" />
+            </s2c>
+        </msg>
+        <msg id="3" name="swap" desc="交换卡牌位置" >
+            <c2s>
+                <f t="uint8" name="group_id" desc="卡组id 1-5" />
+                <f t="uint8" name="card_site1" desc="交换的卡牌1" />
+                <f t="uint8" name="card_site2" desc="交换的卡牌2" />
+            </c2s>
+            <s2c>
+                <f t="uint8" name="group_id" desc="卡组id 1-5" />
+                <f t="p_card" name="card1" desc="交换的卡牌1" />
+                <f t="p_card" name="card2" desc="交换的卡牌2" />
+            </s2c>
+        </msg>
+        <msg id="4" name="equip" desc="装备卡牌" >
+            <c2s>
+                <f t="uint8" name="group_id" desc="卡组id" />
+                <f t="uint8" name="card_site" desc="卡牌装备位置" />
+                <f t="uint32" name="card_id" desc="请求装备的卡牌" />
+            </c2s>
+            <s2c>
+                <f t="uint8" name="group_id" desc="卡组id" />
+                <f t="p_card" name="equiped" desc="装备的卡牌" />
+            </s2c>
+        </msg>
+        <msg id="5" name="set_group_name" desc="设置卡组名字" >
+            <c2s>
+                <f t="uint8" name="group_id" desc="卡组id" />
+                <f t="string" name="group_name" desc="卡组名字" />
+            </c2s>
+            <s2c>
+                <f t="uint8" name="group_id" desc="卡组id" />
+                <f t="string" name="group_name" desc="卡组名字" />
+            </s2c>
+        </msg>
+        <msg id="6" name="set_group_on" desc="设置使用卡组" >
+            <c2s>
+                <f t="uint8" name="group_id" desc="设置的卡组id" />
+            </c2s>
+            <s2c>
+                <f t="uint8" name="group_id" desc="设置的卡组id" />
+            </s2c>
+        </msg>
+    </section>
+    <section id="23" name="match" desc="匹配">
+        <msg id="0" name="single_match" desc="单人匹配" >
+            <c2s/>
+        </msg>
+        <msg id="1" name="cancel_match" desc="取消匹配" >
+            <c2s/>
+            <s2c>
+                <f t="uint8" name="code" desc="错误码 0 退出成功"/>
+            </s2c>
+        </msg>
+        <msg id="2" name="matched_sum" desc="已匹配人数" >
+            <c2s/>
+            <s2c>
+                <f t="uint8" name="sum" desc="人数" />
+            </s2c>
+        </msg>
+        <msg id="3" name="player_in_match" desc="在匹配中" >
+            <s2c>
+                <f t="uint8" name="sum" desc="人数" />
+            </s2c>
+        </msg>
+    </section>
+    <section id="24" name="weapon" desc="武器">
+        <msg id="1" name="select_weapon" desc="选择武器" >
+            <c2s>
+                <f t="uint32" name="weapon_id" desc="选择武器" />
+            </c2s>
+            <s2c>
+                <f t="uint32" name="weapon_id" desc="选择武器" />
+            </s2c>
+        </msg>
+        <msg id="2" name="weapon_info" desc="武器列表" >
+            <c2s/>
+            <s2c>
+                <loop t="p_weapon" name="list" desc="武器列表" />
+            </s2c>
+        </msg>
+        <msg id="3" name="car_info" desc="车身列表" >
+            <c2s/>
+            <s2c>
+                <loop t="p_car" name="list" desc="车身列表" />
+            </s2c>
+        </msg>
+        <msg id="4" name="slot_info" desc="槽位列表" >
+            <c2s/>
+            <s2c>
+                <loop t="p_slot" name="list" desc="槽位列表" />
+            </s2c>
+        </msg>
+        <msg id="5" name="get_weapon" desc="获得武器" >
+            <c2s/>
+            <s2c>
+                <f t="p_weapon" name="weapon" desc="获得武器" />
+            </s2c>
+        </msg>
+        <msg id="6" name="get_car" desc="获得车身" >
+            <c2s/>
+            <s2c>
+                <f t="p_car" name="car" desc="获得车身" />
+            </s2c>
+        </msg>
+        <msg id="7" name="get_slot" desc="获得槽位" >
+            <c2s/>
+            <s2c>
+                <f t="p_slot" name="slot" desc="获得槽位" />
+            </s2c>
+        </msg>
+        <msg id="8" name="upgrade_weapon" desc="升级武器" >
+            <c2s>
+                <f t="uint16" name="weapon_id" desc="武器id" />
+            </c2s>
+            <s2c>
+                <f t="p_weapon" name="weapon" desc="升级武器" />
+            </s2c>
+        </msg>
+        <msg id="9" name="upgrade_car" desc="升级车身" >
+            <c2s>
+                <f t="uint16" name="car_id" desc="车身id" />
+            </c2s>
+            <s2c>
+                <f t="p_car" name="car" desc="升级车身" />
+            </s2c>
+        </msg>
+        <msg id="10" name="update_slot" desc="更新槽位" >
+            <c2s>
+                <f t="uint16" name="slot_id" desc="槽位id" />
+                <f t="uint16" name="weapon_id" desc="武器id" />
+                <f t="uint16" name="car_id" desc="车身id" />
+            </c2s>
+            <s2c>
+                <f t="p_slot" name="slot" desc="更新槽位" />
+            </s2c>
+        </msg>
+    </section>
+
+</protocol>
+

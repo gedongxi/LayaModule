@@ -1,0 +1,1 @@
+{"type":"Scene","props":{"width":720,"height":1280},"compId":2,"child":[{"type":"Script","props":{"y":0,"x":0,"runtime":"script/scene/initScene/InitScene.ts"},"compId":25},{"type":"Sprite","props":{"y":0,"x":0,"width":720,"var":"UIRoot","texture":"comp/img_blank.png","name":"UIRoot","height":1280},"compId":6}],"loadList":["comp/img_blank.png"],"loadList3D":[]}

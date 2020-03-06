@@ -1,0 +1,1 @@
+{"type":"Sprite","props":{"y":0,"x":0,"presetID":1,"name":"test","isPresetRoot":true},"compId":26,"child":[{"type":"VSlider","props":{"skin":"comp/vslider.png","presetID":2},"compId":27}],"loadList":["comp/vslider.png"],"loadList3D":[]}

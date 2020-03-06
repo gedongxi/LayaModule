@@ -1,0 +1,25 @@
+{
+	"version":"LAYAAVATAR:01",
+	"rootNode":{
+		"props":{
+			"name":"caocong_01 (4)",
+			"translate":[
+				23.5,
+				0,
+				-28.5
+			],
+			"rotation":[
+				0.7071068,
+				0,
+				0,
+				-0.7071068
+			],
+			"scale":[
+				1,
+				1,
+				1
+			]
+		},
+		"child":[]
+	}
+}

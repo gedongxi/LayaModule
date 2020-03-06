@@ -1,0 +1,40 @@
+#! /bin/bash
+
+ROOT=$(cd "$(dirname "${0}")"; pwd)
+## 检出或者更新依赖的其他git仓库
+
+echo "##update lockstepLogic"
+#lockstepLogic
+if [ ! -d "$ROOT/src/lockstepLogic" ]; then
+  cd $ROOT/src && git clone git@git.dayukeji.com:H5-Tank/tank-battle-arena-core.git lockstepLogic
+else 
+  cd $ROOT/src/lockstepLogic && git pull 
+fi
+echo ""
+
+
+echo "##update config"
+#config
+if [ ! -d "$ROOT/bin/raw/config" ]; then
+  cd $ROOT/bin/raw && git clone git@git.dayukeji.com:H5-Tank/tank-client-config.git config
+else 
+  cd $ROOT/bin/raw/config && git pull 
+fi
+echo ""
+
+echo "##update config-vo"
+#config-vo
+if [ ! -d "$ROOT/src/script/config/vo" ]; then
+  cd $ROOT/src/script/config && git clone git@git.dayukeji.com:H5-Tank/tank-client-config-vo.git vo
+else
+  cd $ROOT/src/script/config/vo && git pull
+fi
+echo ""
+
+echo "##update ui"
+#ui
+if [ ! -d "$ROOT/laya/assets/ui" ]; then 
+  cd $ROOT/laya/assets && git clone git@git.dayukeji.com:H5-Tank/tank-client-ui.git ui
+else
+  cd $ROOT/laya/assets/ui && git pull
+fi

@@ -1,0 +1,18 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+-mode(native).
+
+
+%% 协议XML文件的位置
+-define(PROTO_FILE, "./protocol.xml").
+-define(OUTPUT_DIR, "../src/script/proto").
+
+
+%% 入口
+main(_Args) ->
+    io:format("************* Start Gen Protocol ***************~n"),
+    gen_ts_protoclass:gen(?PROTO_FILE, ?OUTPUT_DIR),
+    io:format("~n**********************************~n"),
+    io:format("Generate Proto Success ^_^, Bye!~n"),
+    io:format("**********************************~n").
+

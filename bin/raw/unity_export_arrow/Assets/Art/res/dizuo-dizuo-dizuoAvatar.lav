@@ -1,0 +1,25 @@
+{
+	"version":"LAYAAVATAR:01",
+	"rootNode":{
+		"props":{
+			"name":"dizuo",
+			"translate":[
+				5.103,
+				0,
+				-7.049
+			],
+			"rotation":[
+				0,
+				0.7071068,
+				0.7071068,
+				0
+			],
+			"scale":[
+				1,
+				1,
+				1
+			]
+		},
+		"child":[]
+	}
+}

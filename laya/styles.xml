@@ -1,0 +1,5 @@
+<res>
+   <item name="comp/img_bg3.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=11,24,11,20" picType="0" scale="0"/>
+   <item name="comp/img_bg2.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=20,20,20,20" picType="0" scale="0"/>
+   <item name="comp/progress.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+</res>

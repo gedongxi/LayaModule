@@ -1,0 +1,7 @@
+<page>
+   <item name="login/LoginScene.scene" props="" ifExport="分离模式" aName=""/>
+   <item name="init/InitScene.scene" props="" ifExport="分离模式" aName=""/>
+   <item name="main/MainScene.scene" props="" ifExport="分离模式" aName=""/>
+   <item name="fight/FightScene.scene" props="" ifExport="分离模式" aName=""/>
+   <item name="transition/TransitionScene.scene" props="" ifExport="分离模式" aName=""/>
+</page>
